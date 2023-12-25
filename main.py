@@ -11,11 +11,22 @@ from kivy.graphics.texture import Texture
 from kivy.uix.button import Button
 from kivy.uix.settings import SettingsWithSidebar
 from kivy.config import ConfigParser
-
 import numpy as np
-
 from threading import Thread
 import pygame
+import sys
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    final_path = os.path.join(base_path, relative_path)
+    if not os.path.isfile(final_path):
+        # If the file is not found in the packaged path, revert to the development path
+        final_path = os.path.join(os.path.dirname(__file__), relative_path)
+    print(f"Resolved path: {final_path}")  # Diagnostic print
+    return final_path
+
+
 
 # Initialize Pygame Mixer
 pygame.mixer.init()
@@ -23,12 +34,11 @@ pygame.mixer.init()
 # Global constants
 EAR_THRESHOLD = 0.2
 EYE_CLOSED_SECONDS = 10  # Duration for the alarm to be triggered
-# Get the directory where the script is running
-current_dir = os.path.dirname(os.path.realpath(__file__))
-ALARM_SOUND_PATH = 'ressources/alarm_sound.mp3'
+ALARM_SOUND_PATH = resource_path('/Users/emilsk/Desktop/alarm_sound.mp3')
+print(ALARM_SOUND_PATH)
 
 # Initialize dlib's face detector and create the facial landmark predictor
-predictor_path = "dlib-models/shape_predictor_68_face_landmarks.dat"
+predictor_path = resource_path('dlib-models/shape_predictor_68_face_landmarks.dat')
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
@@ -36,14 +46,10 @@ def eye_aspect_ratio(eye):
     # Compute the euclidean distances between the two sets of vertical eye landmarks (x, y)-coordinates
     A = dist.euclidean(eye[1], eye[5])
     B = dist.euclidean(eye[2], eye[4])
-
-    # Compute the euclidean distance between the horizontal eye landmark (x, y)-coordinates
     C = dist.euclidean(eye[0], eye[3])
-
-    # Compute the eye aspect ratio
     ear = (A + B) / (2.0 * C)
-
     return ear
+
 
 class VideoStreamWidget(KivyImage):
     def __init__(self, **kwargs):
@@ -98,6 +104,9 @@ class VideoStreamWidget(KivyImage):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = detector(gray, 0)
 
+        # Flag to indicate that eyes were detected
+        eyes_detected = False
+
         for face in faces:
             shape = predictor(gray, face)
             landmarks = [(shape.part(i).x, shape.part(i).y) for i in range(68)]
@@ -132,11 +141,35 @@ class VideoStreamWidget(KivyImage):
                 if self.alarm_playing:
                     self.stop_alarm()
 
-            # Convert the frame to texture
-            buf = cv2.flip(frame, 0).tostring()
-            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-            self.texture = texture
+            eyes_detected = True  # Set the flag to True as eyes are detected
+
+        if not eyes_detected:
+            # If no faces or eyes are detected, display the message
+            self.display_message(frame, "Eyes not detected",(0, 0, 255))
+
+        # Convert the frame to texture
+        buf = cv2.flip(frame, 0).tostring()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+        self.texture = texture
+
+    def display_message(self, frame, text, color):
+        # Get the width and height of the frame
+        (h, w) = frame.shape[:2]
+
+        # Set the font scale and thickness
+        font_scale = 3  # Increase the scale to make text bigger
+        thickness = 5  # Increase the thickness of the text for better visibility
+
+        # Get the text size (width and height) based on the font scale and thickness
+        (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+
+        # Calculate the x, y coordinates of the text to center it
+        x = (w - text_width) // 2
+        y = (h + text_height) // 2
+
+        # Use cv2.putText() method to put text on the frame
+        cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
 
     def on_stop(self):
         Clock.unschedule(self.update)
