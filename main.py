@@ -38,7 +38,7 @@ ALARM_SOUND_PATH = resource_path('/Users/emilsk/Desktop/alarm_sound.mp3')
 print(ALARM_SOUND_PATH)
 
 # Initialize dlib's face detector and create the facial landmark predictor
-predictor_path = resource_path('dlib-models/shape_predictor_68_face_landmarks.dat')
+predictor_path = resource_path('shape_predictor_68_face_landmarks.dat')
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
