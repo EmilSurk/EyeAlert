@@ -1,3 +1,0 @@
-([('main',
-   '/Users/emilsk/PycharmProjects/pythonProject/dist/main',
-   'EXECUTABLE')],)
