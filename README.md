@@ -17,30 +17,20 @@ The goal of EyeAlert is to provide students with a tool that promotes active eng
 
 ## Getting Started
 
-To get started with EyeAlert, you will need Python installed on your system. Follow these steps:
+To get started with EyeAlert, follow these steps:
 
 1. Clone the repository:
-
-    ```bash
-    git clone https://github.com/your-username/EyeAlert.git
     ```
-
-2. Navigate to the cloned repository:
-
-    ```bash
-    cd EyeAlert
+    git clone https://github.com/EmilSurk/EyeAlert
     ```
-
-3. Install the required dependencies:
-
-    ```bash
-    pip install -r requirements.txt
+2. Ensure Python is installed on your system.
+3. Install Dependencies:
     ```
-
-4. Run the application:
-
-    ```bash
-    python main.py
+    pip install opencv-python dlib scipy kivy numpy pygame
+    ```
+4. Run the Application:
+    ```
+    python3 EyeAlert/main.py
     ```
 
 Make sure you have a webcam connected to your computer as the application relies on real-time video feed.
