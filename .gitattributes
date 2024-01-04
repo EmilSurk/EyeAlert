@@ -1,4 +1,4 @@
-build/main/main.pkg filter=lfs diff=lfs merge=lfs -text
+dist/main[[:space:]]build/main/main.pkg[[:space:]]dist/main.app/Contents/MacOS/main[[:space:]]dist/main.app/Contents/MacOS/main filter=lfs diff=lfs merge=lfs -text
 dist/main.app/Contents/MacOS/main filter=lfs diff=lfs merge=lfs -text
 dist/main filter=lfs diff=lfs merge=lfs -text
-dist/main[[:space:]]build/main/main.pkg[[:space:]]dist/main.app/Contents/MacOS/main[[:space:]]dist/main.app/Contents/MacOS/main filter=lfs diff=lfs merge=lfs -text
+build/main/main.pkg filter=lfs diff=lfs merge=lfs -text
