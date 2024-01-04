@@ -17,7 +17,6 @@ import pygame
 import sys
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     final_path = os.path.join(base_path, relative_path)
     if not os.path.isfile(final_path):
@@ -34,7 +33,7 @@ pygame.mixer.init()
 # Global constants
 EAR_THRESHOLD = 0.2
 EYE_CLOSED_SECONDS = 10  # Duration for the alarm to be triggered
-ALARM_SOUND_PATH = resource_path('/Users/emilsk/Desktop/alarm_sound.mp3')
+ALARM_SOUND_PATH = resource_path('alarm_sound.mp3')
 print(ALARM_SOUND_PATH)
 
 # Initialize dlib's face detector and create the facial landmark predictor
@@ -71,7 +70,7 @@ class VideoStreamWidget(KivyImage):
         self.ear_threshold = max(0.1, min(float(app_config.get('drowsinesssettings', 'EAR_THRESHOLD')), 0.5))
         self.eye_closed_seconds = max(5, min(int(app_config.get('drowsinesssettings', 'EYE_CLOSED_SECONDS')), 30))
         self.alarm_volume = max(0, min(float(app_config.get('drowsinesssettings', 'ALARM_VOLUME')), 1))
-        # Adjust the volume of the alarm
+        # volume of the alarm
         pygame.mixer.music.set_volume(self.alarm_volume)
 
     def init_camera(self, camera_index):
@@ -159,8 +158,8 @@ class VideoStreamWidget(KivyImage):
         (h, w) = frame.shape[:2]
 
         # Set the font scale and thickness
-        font_scale = 3  # Increase the scale to make text bigger
-        thickness = 5  # Increase the thickness of the text for better visibility
+        font_scale = 3
+        thickness = 5
 
         # Get the text size (width and height) based on the font scale and thickness
         (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
@@ -286,11 +285,10 @@ class DrowsinessApp(App):
 
     def stop_stream(self, instance):
         self.video_stream.on_stop()
-        App.get_running_app().stop()  # Add this line to close the application
+        App.get_running_app().stop()
 
     def change_camera(self, instance):
-        # Here you can cycle through camera indices or prompt the user for an index
-        new_camera_index = (self.video_stream.camera_index + 1) % 2  # Toggling between 0 and 1 for example
+        new_camera_index = (self.video_stream.camera_index + 1) % 2
         self.video_stream.change_camera(new_camera_index)
 
     def on_config_change(self, config, section, key, value):
