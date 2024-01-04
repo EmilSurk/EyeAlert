@@ -1,0 +1,3 @@
+dist/main
+build/main/main.pkg
+dist/main.app/Contents/MacOS/main
