@@ -120,6 +120,15 @@ class VideoStreamWidget(KivyImage):
             rightEAR = eye_aspect_ratio(rightEye)
             ear = (leftEAR + rightEAR) / 2.0
 
+            # Calculate distance from camera (pseudocode)
+            distance = self.calculate_distance(landmarks)
+
+            # Dynamically adjust EAR threshold based on distance
+            self.EAR_THRESHOLD = self.adjust_ear_threshold(distance)
+
+            # Display the distance on the frame
+            cv2.putText(frame, f"Distance: {distance:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
             # Check if EAR is below the threshold (eyes closed)
             if ear < self.ear_threshold:  # Use the clamped setting value
                 if self.eye_closed_start_time is None:
@@ -152,6 +161,19 @@ class VideoStreamWidget(KivyImage):
         texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.texture = texture
+
+    def calculate_distance(self, landmarks):
+        # Extract the coordinates of the left and right eye
+        eye_left = np.array([landmarks[36][0], landmarks[36][1]])  # landmarks[36] is a tuple (x, y)
+        eye_right = np.array([landmarks[45][0], landmarks[45][1]])  # landmarks[45] is a tuple (x, y)
+        eye_distance = np.linalg.norm(eye_left - eye_right)
+        return eye_distance
+
+    def adjust_ear_threshold(self, distance):
+        # Example: Linear adjustment (this is a placeholder, adjust as per your calibration)
+        new_threshold = self.EAR_THRESHOLD - (distance * 0.005)
+        new_threshold = max(0.1, min(new_threshold, 0.3))  # Ensure threshold is within sensible bounds
+        return new_threshold
 
     def display_message(self, frame, text, color):
         # Get the width and height of the frame
