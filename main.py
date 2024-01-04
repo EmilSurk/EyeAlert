@@ -141,11 +141,12 @@ class VideoStreamWidget(KivyImage):
                 if self.alarm_playing:
                     self.stop_alarm()
 
+
             eyes_detected = True  # Set the flag to True as eyes are detected
 
         if not eyes_detected:
             # If no faces or eyes are detected, display the message
-            self.display_message(frame, "Eyes not detected",(0, 0, 255))
+            self.display_message(frame, "Eyes not detected", (0, 0, 255))
 
         # Convert the frame to texture
         buf = cv2.flip(frame, 0).tostring()
