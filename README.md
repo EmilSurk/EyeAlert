@@ -8,8 +8,6 @@ EyeAlert is an innovative application designed to assist college students who un
 - **Drowsiness Alarm**: An alarm is triggered if the user's eyes close for a certain threshold duration, indicating potential drowsiness or sleep.
 - **Customizable Settings**: Users can adjust the Eye Aspect Ratio (EAR) threshold, the duration before the alarm is triggered, and the alarm volume.
 - **Obstacle Handling**: Incorporates the ability to add obstacles, simulating real-world situations where the line of sight to the user's eyes may be temporarily obstructed.
-- **Support for Middle Node**: The system can process an intermediate checkpoint, making it versatile for different monitoring scenarios.
-- **Maze Generation**: Implements Kruskal's and Prim's algorithms for generating mazes, which can be used to test and demonstrate the robustness of the eye detection system in complex visual environments.
 
 ## Goal
 
