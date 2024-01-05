@@ -5,8 +5,8 @@ EyeAlert is an innovative application designed to assist college students who un
 ## Eye State Representation
 
 <p float="left">
-  <img src="EyeAlert-Closed.png" width="400" />
   <img src="EyeAlert-Open.png" width="400" /> 
+  <img src="EyeAlert-Closed.png" width="400" />
 </p>
 
 ## Features
