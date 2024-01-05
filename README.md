@@ -1,6 +1,6 @@
 # EyeAlert
 
-EyeAlert is an innovative application designed to assist college students who unintentionally fall asleep during exams or study sessions. Leveraging advanced eye-detection algorithms, EyeAlert monitors the user's eyes and triggers an alarm if it detects that they have fallen asleep. This project aims to help students maintain alertness and improve their academic performance.
+EyeAlert is an innovative application designed to assist college students who unintentionally fall asleep during exams or study sessions. Leveraging advanced eye-detection algorithms, EyeAlert monitors the user's eyes and triggers an alarm if it detects that they have fallen asleep.
 
 ## Eye State Representation
 
@@ -48,6 +48,3 @@ Once the application is running, position yourself so that your face is clearly 
 
 Contributions to EyeAlert are welcome! If you have suggestions for improvements or want to contribute to the code, please feel free to create an issue or submit a pull request.
 
-## License
-
-EyeAlert is open-source software licensed under the MIT license.
