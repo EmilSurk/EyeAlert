@@ -63,6 +63,8 @@ class VideoStreamWidget(KivyImage):
         self.eye_closed_start_time = None
         Clock.schedule_interval(self.update, 1/30)
         self.update_settings()
+        self.show_drowsiness_message = False
+        self.drowsiness_message_start_time = None
 
     def update_settings(self):
         # Accessing the config from the running app instance
@@ -127,7 +129,15 @@ class VideoStreamWidget(KivyImage):
             self.EAR_THRESHOLD = self.adjust_ear_threshold(distance)
 
             # Display the distance on the frame
-            cv2.putText(frame, f"Distance: {distance:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            cv2.putText(frame, f"Distance between the eyes: {distance:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            self.display_ear_threshold(frame, self.EAR_THRESHOLD)
+
+            # Display drowsiness message for a certain duration (e.g., 5 seconds)
+            if self.show_drowsiness_message:
+                if time.time() - self.drowsiness_message_start_time < 5:
+                    self.display_message(frame, "Drowsiness detected", (0, 0, 255))
+                else:
+                    self.show_drowsiness_message = False
 
             # Check if EAR is below the threshold (eyes closed)
             if ear < self.ear_threshold:  # Use the clamped setting value
@@ -143,6 +153,9 @@ class VideoStreamWidget(KivyImage):
                             print("Drowsiness detected! Alarm triggered.")
                             self.play_alarm()
                             self.alarm_playing = True
+                            # Display the drowsiness detection message
+                            self.show_drowsiness_message = True
+                            self.drowsiness_message_start_time = time.time()
             else:
                 # Reset the eye closure timer and stop alarm if eyes are open
                 self.eye_closed_start_time = None
@@ -190,8 +203,16 @@ class VideoStreamWidget(KivyImage):
         x = (w - text_width) // 2
         y = (h + text_height) // 2
 
-        # Use cv2.putText() method to put text on the frame
+        # cv2.putText() method to put text on the frame
         cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
+
+    def display_ear_threshold(self, frame, ear_threshold):
+        # Position for the EAR threshold text
+        position = (10, 60)  # You can adjust the position as needed
+
+        # Display the EAR threshold on the frame
+        cv2.putText(frame, f"EAR Threshold: {ear_threshold:.2f}", position, cv2.FONT_HERSHEY_SIMPLEX, 1,
+                    (255, 255, 255), 2)
 
     def on_stop(self):
         Clock.unschedule(self.update)
@@ -215,7 +236,7 @@ class VideoStreamWidget(KivyImage):
         (x, y, w, h) = cv2.boundingRect(np.array([eye]))
 
         # Enlarge the rectangle
-        margin = 10  # Margin to add to the rectangle size
+        margin = 12  # Margin to add to the rectangle size
         cv2.rectangle(frame, (x - margin, y - margin), (x + w + margin, y + h + margin), (0, 255, 0), 2)
 
         ear = self.eye_aspect_ratio(eye)
